@@ -2,16 +2,25 @@
 
 default: all
 
-all: mkl openblas naive
+all: mkl openblas naive naive2 naive3 cblas
 
-mkl:
+mkl: mkl.c
 	gcc mkl.c -Wl,--start-group /opt/intel/mkl/lib/intel64/libmkl_intel_ilp64.a /opt/intel/mkl/lib/intel64/libmkl_sequential.a /opt/intel/mkl/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm -ldl -DMKL_ILP64 -m64 -I/opt/intel/mkl/include -o mkl
 
-openblas:
-	gcc openblas.c -I /mnt/e/Downloads/OpenBLAS-0.2.20/ -L/mnt/e/Downloads/OpenBLAS-0.2.20/ -lopenblas -o openblas
+openblas: openblas.c
+	gcc openblas.c -I/mnt/e/Downloads/OpenBLAS-0.2.20/ -L/mnt/e/Downloads/OpenBLAS-0.2.20/ -lopenblas -o openblas
 
-naive:
+cblas: cblas.c
+	gcc cblas.c -lcblas -lgfortran cblas_LINUX.a libblas.a -o cblas -L/mnt/e/Downloads/BLAS-3.8.0/
+
+naive: naive.c
 	gcc naive.c -o naive
+
+naive2: naive2.c
+	gcc naive2.c -o naive2
+
+naive3: naive3.c
+	gcc naive3.c -o naive3
 
 clean:
 	rm -f mkl openblas naive
